@@ -44,7 +44,7 @@
             overflow: hidden;
             position: relative;
             padding: 35px 25px;
-            margin-bottom: 40px; /* Espacio para que no tape el contenido de abajo */
+            margin-top: 40px; /* Espacio superior para que el botón no tape el contenido */
         }
 
         /* Capa translúcida para proteger la lectura de los textos */
@@ -158,6 +158,50 @@
             font-size: 0.83rem;
             color: #4a5568;
             line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        /* Contenedor de los 3 infogramas / iconos */
+        .infogram-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 15px 0;
+            gap: 10px;
+        }
+
+        .infogram-item {
+            width: 30%;
+            text-align: center;
+        }
+
+        .infogram-item img {
+            width: 100%;
+            max-width: 65px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Enlace de la mesa de regalos */
+        .gifts-link-container {
+            margin-top: 15px;
+        }
+
+        .btn-gifts {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+            box-shadow: 0 4px 10px rgba(26, 54, 93, 0.3);
+        }
+
+        .btn-gifts:hover {
+            background-color: var(--accent-color);
         }
 
         /* Carrusel Dinámico (Reel de 3 fotos) */
@@ -203,23 +247,23 @@
             100% { transform: translateX(0); }
         }
 
-        /* Reproductor de Música Flotante (Garantizamos que siempre esté visible encima de todo) */
+        /* Reproductor de Música Flotante (Esquina Superior Derecha) */
         .music-player {
             position: fixed;
-            bottom: 25px;
-            right: 25px;
+            top: 20px;
+            right: 20px;
             background: var(--primary-color);
             color: white;
             border-radius: 50%;
-            width: 55px;
-            height: 55px;
+            width: 50px;
+            height: 50px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             z-index: 99999;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             transition: transform 0.2s, background-color 0.2s;
             border: 2px solid white;
         }
@@ -231,6 +275,16 @@
     </style>
 </head>
 <body>
+
+    <!-- Reproductor de Música -->
+    <audio id="background-music" loop>
+        <source src="recursos/cancion.mp3" type="audio/mp3">
+        Tu navegador no soporta audio.
+    </audio>
+
+    <div class="music-player" id="music-btn" title="Reproducir / Pausar música">
+        🎵
+    </div>
 
     <div class="invitation-container">
         <div class="content-overlay">
@@ -261,6 +315,24 @@
             <div class="gifts-section">
                 <h3>Mesa de Regalos</h3>
                 <p>El mejor regalo que nos puedes dar es tu presencia, pero si gustas darle un detalle a nuestro hijo, puedes hacerlo con las opciones de nuestra preferencia.</p>
+                
+                <!-- Sección de 3 Infogramas / Iconos -->
+                <div class="infogram-container">
+                    <div class="infogram-item">
+                        <img src="recursos/icono1.png" alt="Icono 1">
+                    </div>
+                    <div class="infogram-item">
+                        <img src="recursos/icono2.png" alt="Icono 2">
+                    </div>
+                    <div class="infogram-item">
+                        <img src="recursos/icono3.png" alt="Icono 3">
+                    </div>
+                </div>
+
+                <!-- Enlace a Mesa de Regalos -->
+                <div class="gifts-link-container">
+                    <a href="https://www.amazon.com.mx/baby-reg/thalia-franco-noviembre-2026-mexicali/33LYQ68DFHBDI?ref_=cm_sw_r_apin_dp_0MZFAZCWF5AQHK7ZC6DQ&language=en-US" target="_blank" class="btn-gifts">Ver Mesa de Regalos 🎁</a>
+                </div>
             </div>
 
             <!-- Reel / Carrusel de 3 Fotos -->
@@ -278,21 +350,26 @@
         </div>
     </div>
 
-    <!-- Reproductor de Música -->
-    <audio id="background-music" loop>
-        <source src="recursos/cancion.mp3" type="audio/mp3">
-        Tu navegador no soporta audio.
-    </audio>
-
-    <div class="music-player" id="music-btn" title="Reproducir / Pausar música">
-        🎵
-    </div>
-
     <script>
         const music = document.getElementById('background-music');
         const musicBtn = document.getElementById('music-btn');
         let isPlaying = false;
 
+        // Intentar reproducir música automáticamente al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            music.play().then(() => {
+                isPlaying = true;
+                musicBtn.style.opacity = '1';
+            }).catch(error => {
+                // Si el navegador bloquea la reproducción automática, se queda en pausa 
+                // esperando a que el usuario haga clic en el botón.
+                console.log("El navegador bloqueó la reproducción automática. Se requiere interacción.");
+                isPlaying = false;
+                musicBtn.style.opacity = '0.8';
+            });
+        });
+
+        // Control manual mediante el botón flotante
         musicBtn.addEventListener('click', () => {
             if (isPlaying) {
                 music.pause();
